@@ -1,3 +1,7 @@
+package Tasks;
+
+import java.util.Objects;
+
 public abstract class Task {
 
     private int index;
@@ -5,9 +9,10 @@ public abstract class Task {
     private String description;
     private String status;
 
-    public Task(String title, String description) {
+    public Task(String title, String description, String status) {
         this.title = title;
         this.description = description;
+        this.status = status;
     }
 
 
@@ -44,5 +49,21 @@ public abstract class Task {
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return index == task.index &&
+                Objects.equals(title, task.title) &&
+                Objects.equals(description, task.description) &&
+                Objects.equals(status, task.status);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(index, title, description, status);
     }
 }
