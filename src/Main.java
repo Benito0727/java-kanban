@@ -11,11 +11,11 @@ public class Main {
 
         EpicTask epicTask1 = new EpicTask("Слон", "Убрать слона в холодильник", "NEW");
         EpicTask epicTask2 = new EpicTask("Ремонт", "Сделать ремонт в квартире", "NEW");
-        SubTask subTask1 = new SubTask("Открыть", "Открыть дверцу холодильника", "NEW");
-        SubTask subTask2 = new SubTask("Положить", "Положить слона в холодильник", "NEW");
-        SubTask subTask3 = new SubTask("Закрыть", "Закрыть дверцу холодильника", "NEW");
+        SubTask subTask1 = new SubTask(3 ,"Открыть", "Открыть дверцу холодильника", "NEW");
+        SubTask subTask2 = new SubTask(3 ,"Положить", "Положить слона в холодильник", "NEW");
+        SubTask subTask3 = new SubTask(3 ,"Закрыть", "Закрыть дверцу холодильника", "NEW");
 
-        SubTask subTask = new SubTask("Стены", "Поклеить новые обои", "NEW");
+        SubTask subTask = new SubTask(4 ,"Стены", "Поклеить новые обои", "NEW");
 
         taskManager.createSimpleTask(simpleTask1);
         taskManager.createSimpleTask(simpleTask2);
@@ -23,10 +23,10 @@ public class Main {
         taskManager.createEpicTask(epicTask1);
         taskManager.createEpicTask(epicTask2);
 
-        taskManager.createSubTask(3, subTask1);
-        taskManager.createSubTask(3, subTask2);
-        taskManager.createSubTask(3, subTask3);
-        taskManager.createSubTask(4, subTask);
+        taskManager.createSubTask(subTask1);
+        taskManager.createSubTask(subTask2);
+        taskManager.createSubTask(subTask3);
+        taskManager.createSubTask(subTask);
 
         System.out.println(taskManager.getEpicTaskList());
         System.out.println(taskManager.getSimpleTaskList());
@@ -52,7 +52,7 @@ public class Main {
 
         taskManager.removeTaskById(4);
         taskManager.removeTaskById(1);
-        SubTask newSubTask = new SubTask("Открыть", "открыть дверцу", "IN_PROGRESS");
+        SubTask newSubTask = new SubTask(3, "Открыть", "открыть дверцу", "IN_PROGRESS");
         taskManager.updateSubTask(5, newSubTask);
 
 

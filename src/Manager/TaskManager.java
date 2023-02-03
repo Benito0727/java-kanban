@@ -29,9 +29,8 @@ public class TaskManager {
         taskId++;
     }
 
-    public void createSubTask(int id, SubTask task) { // по ид эпика создает ему субтаск
-        EpicTask epic = epicTasks.get(id);
-        task.setEpicTaskId(id);
+    public void createSubTask(SubTask task) { // по ид эпика создает ему субтаск
+        EpicTask epic = epicTasks.get(task.getEpicTaskId());
         epic.subTaskId.add(taskId);
         subTasks.put(taskId,task);
         task.setIndex(taskId);
