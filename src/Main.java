@@ -1,11 +1,15 @@
-import Manager.TaskManager;
+import Manager.InMemoryHistoryManager;
+import Manager.InMemoryTaskManager;
 import Tasks.EpicTask;
 import Tasks.SimpleTask;
 import Tasks.SubTask;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+
+        InMemoryHistoryManager memoryHistory = new InMemoryHistoryManager();
+
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         SimpleTask simpleTask1 = new SimpleTask("Помыть кота", "Кот грязный и его нужно помыть", "NEW");
         SimpleTask simpleTask2 = new SimpleTask("Помыть пса", "Пес грязный и его нужно помыть", "NEW");
 
@@ -48,6 +52,25 @@ public class Main {
         System.out.println(taskManager.getSubTaskById(7));
         System.out.println(taskManager.getSubTaskById(8));
 
+        System.out.println(memoryHistory.getHistory().size());
+
+        System.out.println(taskManager.getSimpleTaskById(1));
+        System.out.println(taskManager.getSimpleTaskById(2));
+        System.out.println(taskManager.getEpicTaskById(3));
+        System.out.println(taskManager.getEpicTaskById(4));
+
+        System.out.println(memoryHistory.getHistory().size());
+
+        System.out.println(taskManager.getEpicTaskById(4));
+        System.out.println(taskManager.getSubTaskById(5));
+        System.out.println(taskManager.getSubTaskById(6));
+        System.out.println(taskManager.getSubTaskById(7));
+
+        System.out.println(memoryHistory.getHistory().size());
+
+
+
+
         System.out.println(taskManager.getSubTaskList(epicTask1));
 
         taskManager.removeTaskById(4);
@@ -64,6 +87,8 @@ public class Main {
         System.out.println(taskManager.getSimpleTaskById(6));
         System.out.println(taskManager.getSubTaskById(7));
         System.out.println(taskManager.getSubTaskById(8));
+
+        memoryHistory.getHistory();
 
         System.out.println(taskManager.getSimpleTaskList());
         System.out.println(taskManager.getEpicTaskList());

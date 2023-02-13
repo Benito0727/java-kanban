@@ -5,14 +5,14 @@ import java.util.Objects;
 public abstract class Task {
 
     private int index;
-    private String title;
-    private String description;
-    private String status;
+    private final String title;
+    private final String description;
+    private TaskStatus status;
 
     public Task(String title, String description, String status) {
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.status = TaskStatus.valueOf(status);
     }
 
 
@@ -33,11 +33,11 @@ public abstract class Task {
         return description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
