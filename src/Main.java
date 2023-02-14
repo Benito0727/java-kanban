@@ -48,8 +48,6 @@ public class Main {
         System.out.println(taskManager.getEpicTaskById(3));
         System.out.println(taskManager.getEpicTaskById(4));
         System.out.println(taskManager.getSubTaskById(5));
-        System.out.println(taskManager.getSubTaskById(6));
-        System.out.println(taskManager.getSubTaskById(7));
         System.out.println(taskManager.getSubTaskById(8));
 
         System.out.println(memoryHistory.getHistory().size());
