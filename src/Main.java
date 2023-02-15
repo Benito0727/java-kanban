@@ -8,7 +8,7 @@ import Tasks.TaskStatus;
 public class Main {
     public static void main(String[] args) {
 
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+
 
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
         SimpleTask simpleTask1 = new SimpleTask("Помыть кота", "Кот грязный и его нужно помыть", TaskStatus.NEW);
@@ -51,21 +51,21 @@ public class Main {
         System.out.println(taskManager.getSubTaskById(5));
         System.out.println(taskManager.getSubTaskById(8));
 
-        System.out.println(historyManager.getHistory().size());
+        System.out.println(taskManager.getHistory().size());
 
         System.out.println(taskManager.getSimpleTaskById(1));
         System.out.println(taskManager.getSimpleTaskById(2));
         System.out.println(taskManager.getEpicTaskById(3));
         System.out.println(taskManager.getEpicTaskById(4));
 
-        System.out.println(historyManager.getHistory().size());
+        System.out.println(taskManager.getHistory().size());
 
         System.out.println(taskManager.getEpicTaskById(4));
         System.out.println(taskManager.getSubTaskById(5));
         System.out.println(taskManager.getSubTaskById(6));
         System.out.println(taskManager.getSubTaskById(7));
 
-        System.out.println(historyManager.getHistory().size());
+        System.out.println(taskManager.getHistory().size());
 
 
 
@@ -87,15 +87,15 @@ public class Main {
         System.out.println(taskManager.getSubTaskById(7));
         System.out.println(taskManager.getSubTaskById(8));
 
-        System.out.println(historyManager.getHistory());
+        System.out.println(taskManager.getHistory());
 
-        System.out.println(taskManager.getSimpleTaskList());
-        System.out.println(taskManager.getEpicTaskList());
-
-        taskManager.removeTaskById(10);
-
-        System.out.println(taskManager.getEpicTaskList());
-        System.out.println(taskManager.getSimpleTaskList());
+//        System.out.println(taskManager.getSimpleTaskList());
+//        System.out.println(taskManager.getEpicTaskList());
+//
+//        taskManager.removeTaskById(10);
+//
+//        System.out.println(taskManager.getEpicTaskList());
+//        System.out.println(taskManager.getSimpleTaskList());
 
     }
 }

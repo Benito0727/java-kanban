@@ -10,7 +10,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int taskId = 1;
 
-
+    HistoryManager history = Managers.getDefaultHistory();
 
     HashMap<Integer, EpicTask> epicTasks = new HashMap<>();
     HashMap<Integer, SubTask> subTasks = new HashMap<>();
@@ -46,7 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public SimpleTask getSimpleTaskById(int id) {  // если есть отдает обьект обычной задачи по ид
         if (simpleTasks.get(id) != null) {
-            Managers.getDefaultHistory().add(simpleTasks.get(id)); // добавляет таску в историю просмотренных
+            history.add(simpleTasks.get(id)); // добавляет таску в историю просмотренных
             return simpleTasks.get(id);
         }
         return null;
@@ -55,7 +55,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public SubTask getSubTaskById(int id) { // если есть отдает подзадачу по ид
         if (subTasks.get(id) != null) {
-            Managers.getDefaultHistory().add(subTasks.get(id)); // добавляет таску в историю просмотренных
+            history.add(subTasks.get(id)); // добавляет таску в историю просмотренных
             return subTasks.get(id);
         }
         return null;
@@ -64,7 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public EpicTask getEpicTaskById(int id) {  // если есть отдает эпик по ид
         if (epicTasks.get(id) != null) {
-            Managers.getDefaultHistory().add(epicTasks.get(id)); // добавляет таску в историю просмотренных
+            history.add(epicTasks.get(id)); // добавляет таску в историю просмотренных
             return epicTasks.get(id);
         }
         return null;
@@ -206,6 +206,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory(){
-        return InMemoryHistoryManager.tasksHistory;
+        return history.getHistory();
     }
 }
