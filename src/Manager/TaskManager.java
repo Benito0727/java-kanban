@@ -3,8 +3,10 @@ package Manager;
 import Tasks.EpicTask;
 import Tasks.SimpleTask;
 import Tasks.SubTask;
+import Tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
@@ -27,4 +29,7 @@ public interface TaskManager {
     ArrayList<SubTask> getSubTaskList(EpicTask task);
     ArrayList<SimpleTask> getSimpleTaskList();
     ArrayList<EpicTask> getEpicTaskList();
+    List<Task> getHistory();
+
+
 }

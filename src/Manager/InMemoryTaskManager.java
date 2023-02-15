@@ -3,15 +3,12 @@ import Tasks.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 
 
 public class InMemoryTaskManager implements TaskManager {
 
     private int taskId = 1;
-
-    InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
-
 
 
 
@@ -49,7 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public SimpleTask getSimpleTaskById(int id) {  // если есть отдает обьект обычной задачи по ид
         if (simpleTasks.get(id) != null) {
-            historyManager.add(simpleTasks.get(id)); // добавляет таску в историю просмотренных
+            Managers.getDefaultHistory().add(simpleTasks.get(id)); // добавляет таску в историю просмотренных
             return simpleTasks.get(id);
         }
         return null;
@@ -58,7 +55,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public SubTask getSubTaskById(int id) { // если есть отдает подзадачу по ид
         if (subTasks.get(id) != null) {
-            historyManager.add(subTasks.get(id)); // добавляет таску в историю просмотренных
+            Managers.getDefaultHistory().add(subTasks.get(id)); // добавляет таску в историю просмотренных
             return subTasks.get(id);
         }
         return null;
@@ -67,7 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public EpicTask getEpicTaskById(int id) {  // если есть отдает эпик по ид
         if (epicTasks.get(id) != null) {
-            historyManager.add(epicTasks.get(id)); // добавляет таску в историю просмотренных
+            Managers.getDefaultHistory().add(epicTasks.get(id)); // добавляет таску в историю просмотренных
             return epicTasks.get(id);
         }
         return null;
@@ -80,8 +77,8 @@ public class InMemoryTaskManager implements TaskManager {
                 task.setStatus(TaskStatus.NEW);
             } else if (subTasks.get(taskId) != null) {
                 task.setStatus(TaskStatus.IN_PROGRESS);
-            } else if (subTasks.get(taskId) != null && !(subTasks.get(taskId).getStatus().equals("NEW") &&
-                    !(subTasks.get(taskId).getStatus().equals("IN_PROGRESS")))) {
+            } else if (subTasks.get(taskId) != null && !(subTasks.get(taskId).getStatus().equals(TaskStatus.NEW) &&
+                    !(subTasks.get(taskId).getStatus().equals(TaskStatus.IN_PROGRESS)))) {
                 task.setStatus(TaskStatus.DONE);
             }
         }
@@ -205,5 +202,10 @@ public class InMemoryTaskManager implements TaskManager {
             epicTaskList.add(epicTasks.get(id));
         }
         return epicTaskList;
+    }
+
+    @Override
+    public List<Task> getHistory(){
+        return InMemoryHistoryManager.tasksHistory;
     }
 }

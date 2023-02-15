@@ -9,10 +9,10 @@ public abstract class Task {
     private final String description;
     private TaskStatus status;
 
-    public Task(String title, String description, String status) {
+    public Task(String title, String description, TaskStatus status) {
         this.title = title;
         this.description = description;
-        this.status = TaskStatus.valueOf(status);
+        this.status = status;
     }
 
 
