@@ -90,6 +90,7 @@ public class InMemoryTaskManager implements TaskManager {
             task.setIndex(id);
             simpleTasks.put(id, task);
         }
+        history.remove(id);
     }
 
     @Override
@@ -101,6 +102,7 @@ public class InMemoryTaskManager implements TaskManager {
             subTasks.put(id, task);
             updateStatusEpicTask(epicTasks.get(task.getEpicTaskId())); // ...пересматривает статус эпика
         }
+        history.remove(id);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
             task.setIndex(id);
             epicTasks.put(id, task);
         }
-
+        history.remove(id);
     }
 
     @Override
@@ -118,6 +120,7 @@ public class InMemoryTaskManager implements TaskManager {
             EpicTask task = epicTasks.get(id);
             for (Integer subTask : task.subTaskId) {
                 subTasks.remove(subTask);           // ...удаляет связанные с ним подзадачи
+                history.remove(subTask);
             }
             epicTasks.remove(id); // ...удаляет эпик
         }
@@ -128,6 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
             subTasks.remove(id);
             updateStatusEpicTask(epicTasks.get(obj.getEpicTaskId()));
         }
+        history.remove(id);
     }
 
     @Override
