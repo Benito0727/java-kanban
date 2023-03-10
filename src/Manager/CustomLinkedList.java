@@ -22,14 +22,13 @@ public class CustomLinkedList {
         Node node = new Node(task);
         if (head == null) {
             head = node;
-            tail = node;
-            removeNode(task.getIndex());
         } else {
             node.setPreviousNode(tail);
             tail.setNextNode(node);
-            tail = node;
-            removeNode(task.getIndex());
         }
+        tail = node;
+        tail.setNextNode(null);
+        removeNode(task.getIndex());
         nodeHashMap.put(task.getIndex(), node);
     }
 
@@ -38,15 +37,19 @@ public class CustomLinkedList {
 
     public void removeNode(int id) {
         if (nodeHashMap.get(id) != null){
-            Node oldNode = nodeHashMap.get(id);
-            if (nodeHashMap.get(id).equals(head)){
-                oldNode.getNextNode().setPreviousNode(null);
-                head = oldNode.getNextNode();
-            } else oldNode.getPreviousNode().setNextNode(oldNode.getNextNode());
-            if (nodeHashMap.get(id).equals(tail)){
-                oldNode.getPreviousNode().setNextNode(null);
-                tail = oldNode.getPreviousNode();
-            } else oldNode.getNextNode().setPreviousNode(oldNode.getPreviousNode());
+            Node nodeToRemove = nodeHashMap.get(id);
+            if (nodeToRemove.equals(head)){
+                if (nodeToRemove.getNextNode() != null) nodeToRemove.getNextNode().setPreviousNode(null);
+                head = nodeToRemove.getNextNode();
+            } else nodeToRemove.getPreviousNode().setNextNode(nodeToRemove.getNextNode());
+            if (nodeToRemove.equals(tail)){
+                if(nodeToRemove.getPreviousNode() != null) nodeToRemove.getPreviousNode().setNextNode(null);
+                tail = nodeToRemove.getPreviousNode();
+            } else {
+               if (nodeToRemove.getNextNode() != null) {
+                   nodeToRemove.getNextNode().setPreviousNode(nodeToRemove.getPreviousNode());
+               }
+            }
             nodeHashMap.remove(id);
         }
     }
@@ -58,12 +61,12 @@ public class CustomLinkedList {
 
 
 class Node{
-    final Task values;
+    final Task content;
     private Node previousNode;
     private Node nextNode;
 
-    public Node(Task values) {
-        this.values = values;
+    public Node(Task content) {
+        this.content = content;
     }
 
     public Node getPreviousNode(){
@@ -87,11 +90,11 @@ class Node{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
-        return Objects.equals(values, node.values) && Objects.equals(previousNode, node.previousNode) && Objects.equals(nextNode, node.nextNode);
+        return Objects.equals(content, node.content) && Objects.equals(previousNode, node.previousNode) && Objects.equals(nextNode, node.nextNode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(values, previousNode, nextNode);
+        return Objects.hash(content, previousNode, nextNode);
     }
 }

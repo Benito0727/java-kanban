@@ -33,6 +33,8 @@ public class Main {
             System.out.println(task);
         }
 
+        taskManager.removeAllTask();
+
         taskManager.getSubTaskById(5);
         taskManager.getSubTaskById(3);
         taskManager.getSubTaskById(4);

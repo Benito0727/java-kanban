@@ -136,24 +136,37 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllTask() { // очищает все мапы
-        epicTasks.clear();
-        simpleTasks.clear();
-        subTasks.clear();
+        cleanEpicTasks();
+        cleanSimpleTasks();
     }
 
     @Override
     public void cleanSimpleTasks() { // удаляет обычные задачи
+        for (Integer id : simpleTasks.keySet()) {
+            history.remove(id);
+        }
         simpleTasks.clear();
+
     }
 
     @Override
     public void cleanEpicTasks() { // удаляет эпики, вместе с этим и подзадачи
+        for (Integer id : epicTasks.keySet()) {
+            history.remove(id);
+        }
+        for (Integer id : subTasks.keySet()) {
+            history.remove(id);
+        }
         epicTasks.clear();
         subTasks.clear();
+
     }
 
     @Override
     public void cleanSubTasks() { // удаляет подзадачи...
+        for (Integer id : subTasks.keySet()) {
+            history.remove(id);
+        }
         subTasks.clear();
         for (Integer epicKey : epicTasks.keySet()) { // ...в связи с этим пересматривает статусы эпиков
             updateStatusEpicTask(epicTasks.get(epicKey));

@@ -2,6 +2,7 @@ package Manager;
 
 import Tasks.Task;
 
+
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -19,11 +20,14 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         tasksHistory = new ArrayList<>();
-        tasksHistory.add(customLinkedList.getTail().values);
-        Node prev = customLinkedList.getTail().getPreviousNode();
-        while (prev != null) {
-            tasksHistory.add(prev.values);
-            prev = prev.getPreviousNode();
+        if (customLinkedList.getTail() != null) {
+            tasksHistory.add(customLinkedList.getTail().content);
+            Node prev = customLinkedList.getTail().getPreviousNode();
+            while (prev != null) {
+                tasksHistory.add(prev.content);
+                prev = prev.getPreviousNode();
+            }
+            return tasksHistory;
         }
         return tasksHistory;
     }
@@ -34,7 +38,11 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void clearHistory(){
+        for (Integer id : customLinkedList.nodeHashMap.keySet()) {
+            remove(id);
+        }
         customLinkedList.nodeHashMap.clear();
+
     }
 
 
