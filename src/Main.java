@@ -33,7 +33,7 @@ public class Main {
             System.out.println(task);
         }
 
-        taskManager.removeAllTask();
+
 
         taskManager.getSubTaskById(5);
         taskManager.getSubTaskById(3);
@@ -54,6 +54,16 @@ public class Main {
         for (Task task : taskManager.getHistory()) {
             System.out.println(task);
         }
+        Task epic1 = new EpicTask("test", "test description", TaskStatus.NEW);
+
+        taskManager.createEpicTask((EpicTask) epic1);
+        taskManager.getEpicTaskById(6);
+
+        for (Task task : taskManager.getHistory()) {
+            System.out.println(task);
+        }
+
+
 
     }
 
