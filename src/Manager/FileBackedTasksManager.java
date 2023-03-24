@@ -51,8 +51,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         manager1.loadTaskManagerMemory();
 
         for (Task task : manager1.getHistory()) {
-            System.out.println(task.getIndex());
+            System.out.print(task.getIndex() + " ");
         }
+        System.out.println("\n");
         System.out.println(manager1.getSimpleTaskById(1));
 
     }
@@ -60,17 +61,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     final private File managerCSV = new File("resources/taskManager.csv");
     final private File historyCSV = new File("resources/history.csv");
 
-    static HistoryManager historyManager = Managers.getDefaultHistory();
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
 
     public void save() {
-        String manager = "resources/taskManager.csv";
+
         try {
-            Files.deleteIfExists(Path.of(manager));
-            Files.createFile(Path.of(manager));
+            Files.deleteIfExists(managerCSV.toPath());
+            Files.createFile(managerCSV.toPath());
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+
         try (FileWriter fileWriter = new FileWriter(managerCSV, true)) {
             fileWriter.write("id,title,description,status,relatedTask,taskType\n");
             for (Integer id : tasks.keySet()) {
@@ -102,18 +105,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     public void loadHistory(){
-        List<Task> history = new ArrayList<>();
+        List<Task> historyList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(historyCSV))) {
             while (br.ready()){
                 String line = br.readLine();
                 String[] taskID = line.split(",");
 
-                for (int i = 0; i < taskID.length; i++) {
-                    history.add(tasks.get(Integer.parseInt(taskID[i])));
+                for (String s : taskID) {
+                    historyList.add(tasks.get(Integer.parseInt(s)));
                 }
-                for (Task task : history) historyManager.add(task);
 
+                for (Task task : historyList) history.add(task);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -125,7 +128,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
 
     public void loadTaskManagerMemory() {
-
         try (BufferedReader reader = new BufferedReader(new FileReader(managerCSV))) {
             while (reader.ready()) {
                 String lines = reader.readLine();
@@ -144,6 +146,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                         if (task != null) {
                             task.setIndex(Integer.parseInt(line[0]));
                             tasks.put(task.getIndex(), task);
+                            loadHistory();
                         } else {
                             throw new ManagerLoadException("Ошибка загрузки");
                         }
@@ -172,6 +175,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                                 task.subTaskId.add(Integer.parseInt(id));
                             }
                             tasks.put(task.getIndex(), task);
+                            loadHistory();
                         } else {
                             throw new ManagerLoadException("Ошибка загрузки");
                         }
@@ -191,6 +195,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                         if (task != null) {
                             task.setIndex(Integer.parseInt(line[0]));
                             tasks.put(task.getIndex(), task);
+                            loadHistory();
                         } else {
                             throw new ManagerLoadException("Ошибка загрузки");
                         }
@@ -207,7 +212,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        loadHistory();
+
     }
 
 
