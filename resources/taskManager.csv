@@ -3,3 +3,5 @@ id,title,description,status,relatedTask,taskType
 2,test2,testing2,NEW, ,SIMPLE_TASK
 3,epicTask,description,IN_PROGRESS,[4],EPIC_TASK
 4,subtask,description,NEW,3,SUBTASK
+history
+1,4,2,3,
