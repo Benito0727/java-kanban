@@ -44,11 +44,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
         }
 
         System.out.println(" \n _____ \n");
-
-        FileBackedTasksManager manager1 = new FileBackedTasksManager();
         File taskManager = new File("resources/taskManager.csv");
+        FileBackedTasksManager manager1 = loadTaskManagerMemory(taskManager);
 
-        loadTaskManagerMemory(taskManager);
+
+
 
         for (Task task : manager1.getHistory()) {
             System.out.print(task.getIndex() + " ");
@@ -103,8 +103,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
     }
 
 
-    public static void loadTaskManagerMemory(File file) {
-
+    public static FileBackedTasksManager loadTaskManagerMemory(File file) {
+        FileBackedTasksManager backedManager = new FileBackedTasksManager();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             if (file.isFile()) {
                 while (reader.ready()) {
@@ -113,7 +113,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                     if (line.length > 5) if (line[5].equals("SIMPLE_TASK")) {
                         SimpleTask task = new SimpleTask(line[1], line[2], getTaskStatus(line[3]));
                         task.setIndex(Integer.parseInt(line[0]));
-                        tasks.put(task.getIndex(), task);
+                        backedManager.tasks.put(task.getIndex(), task);
                     } else if (line[5].equals("EPIC_TASK")) {
                         EpicTask task = new EpicTask(line[1], line[2], getTaskStatus(line[3]));
 
@@ -126,12 +126,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                         for (String id : ids) {
                             task.subTaskId.add(Integer.parseInt(id));
                         }
-                        tasks.put(task.getIndex(), task);
+                        backedManager.tasks.put(task.getIndex(), task);
 
                     } else if (line[5].equals("SUBTASK")) {
                         SubTask task = new SubTask(Integer.parseInt(line[4]), line[1], line[2], getTaskStatus(line[3]));
                         task.setIndex(Integer.parseInt(line[0]));
-                        tasks.put(task.getIndex(), task);
+                       backedManager.tasks.put(task.getIndex(), task);
                     }
 
                 }
@@ -147,18 +147,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (br.ready()){
                 String line = br.readLine();
-                if (line.isBlank()) {
+                if (line.equals("history")) {
+                    String history = br.readLine();
+                    StringBuilder builder = new StringBuilder(history);
+
+                    builder.reverse();
+                    line = builder.toString();
                     String[] taskID = line.split(",");
 
-                    for (String s : taskID) {
-                        history.add(tasks.get(Integer.parseInt(s)));
+                    for (int i = 1; i < taskID.length; i++) {
+                        backedManager.history.add(tasks.get(Integer.parseInt(taskID[i])));
                     }
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        return backedManager;
     }
 
     private static TaskStatus getTaskStatus(String status){
@@ -172,7 +177,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
         return null;
     }
 
-    public String taskToString(Task task){
+    private String taskToString(Task task){
         String line;
         line = task.getIndex() + "," +
                 task.getTitle() + "," +
