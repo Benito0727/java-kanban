@@ -8,13 +8,17 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
 
+
+
     public List<Task> tasksHistory;
     CustomLinkedList customLinkedList = new CustomLinkedList();
 
 
     @Override
     public void add(Task task) {
-        customLinkedList.linkLast(task);
+        if (task != null) {
+            customLinkedList.linkLast(task);
+        } else throw new NullPointerException("В качестве задачи передан пустой объект");
     }
 
     @Override
@@ -34,7 +38,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        customLinkedList.removeNode(id);
+        if (!(customLinkedList.nodeHashMap.isEmpty())) customLinkedList.removeNode(id);
     }
 
     public void clearHistory(){

@@ -7,6 +7,7 @@ import Tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -16,7 +17,7 @@ public interface TaskManager {
     SimpleTask getSimpleTaskById(int id);
     SubTask getSubTaskById(int id);
     EpicTask getEpicTaskById(int id);
-    void updateStatusEpicTask(EpicTask task);
+    void updateEpicTaskStatus(EpicTask task);
     void updateSimpleTask(int id, SimpleTask task);
     void updateSubTask(int id, SubTask task);
     void updateEpicTask(int id, EpicTask task);
@@ -30,6 +31,6 @@ public interface TaskManager {
     ArrayList<SimpleTask> getSimpleTaskList();
     ArrayList<EpicTask> getEpicTaskList();
     List<Task> getHistory();
-
+    Set<Task> getPrioritisedTask();
 
 }

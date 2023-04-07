@@ -10,54 +10,6 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager{
 
-
-
-    public static void main(String[] args) {
-        FileBackedTasksManager manager = new FileBackedTasksManager();
-
-        SimpleTask simpleTask = new SimpleTask("test1", "testing", TaskStatus.NEW);
-        SimpleTask simpleTask1 = new SimpleTask("test2", "testing2", TaskStatus.NEW);
-        manager.createSimpleTask(simpleTask);
-        manager.createSimpleTask(simpleTask1);
-
-        EpicTask epicTask = new EpicTask("epicTask", "description", TaskStatus.NEW);
-        manager.createEpicTask(epicTask);
-
-        SubTask subTask = new SubTask(3, "subtask", "description", TaskStatus.NEW);
-        manager.createSubTask(subTask);
-
-
-        manager.getEpicTaskById(3);
-
-        System.out.println(manager.getHistory());
-
-        manager.getSimpleTaskById(1);
-        manager.getSimpleTaskById(2);
-        manager.getSimpleTaskById(1);
-        manager.getSubTaskById(4);
-        manager.getSimpleTaskById(1);
-
-        System.out.println("_____");
-
-        for (Task task : manager.getHistory()) {
-            System.out.print(task.getIndex() + " ");
-        }
-
-        System.out.println(" \n _____ \n");
-        File taskManager = new File("resources/taskManager.csv");
-        FileBackedTasksManager manager1 = loadTaskManagerMemory(taskManager);
-
-
-
-
-        for (Task task : manager1.getHistory()) {
-            System.out.print(task.getIndex() + " ");
-        }
-        System.out.println("\n");
-        System.out.println(manager1.getEpicTaskById(3));
-
-    }
-
     final private File managerCSV = new File("resources/taskManager.csv");
 
     void save() {
@@ -71,7 +23,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
         }
 
         try (FileWriter fileWriter = new FileWriter(managerCSV, true)) {
-            fileWriter.write("id,title,description,status,relatedTask,taskType\n");
+            fileWriter.write("id,title,description,status,relatedTask,taskType,date,time,duration\n");
             if (!(tasks.isEmpty())) {
                 for (Integer id : tasks.keySet()) {
                     fileWriter.write(taskToString(tasks.get(id)));
@@ -92,16 +44,66 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                     fileWriter.write(task.getIndex() + ",");
                 }
             } else {
-                throw new ManagerException("Отсутсвует файл сохранени");
+                throw new ManagerException("Отсутствует файл сохранения");
             }
         } catch (ManagerException e){
             System.out.println(e.getMessage());
         } catch (RuntimeException | IOException e) {
             System.out.println(e.getMessage());
         }
-
     }
 
+    private static String getCurrentFormatStringDateFromString(String str) {
+        String[] date = str.split(" ");
+        String year = date[0];
+        String month = date[1];
+        String day = date[2];
+        return day + " " + getMonthNumberFromName(month) + " " + year;
+    }
+
+
+    private static String getMonthNumberFromName(String monthName){
+        String monthNumber = "";
+        switch (monthName) {
+            case "JANUARY" :
+                monthNumber = "01";
+                break;
+            case "FEBRUARY" :
+                monthNumber = "02";
+                break;
+            case "MARCH" :
+                monthNumber = "03";
+                break;
+            case "APRIL" :
+                monthNumber = "04";
+                break;
+            case "MAY" :
+                monthNumber = "05";
+                break;
+            case "JUNE" :
+                monthNumber = "06";
+                break;
+            case "JULY" :
+                monthNumber = "07";
+                break;
+            case "AUGUST" :
+                monthNumber = "08";
+                break;
+            case "SEPTEMBER" :
+                monthNumber = "09";
+                break;
+            case "OCTOBER" :
+                monthNumber = "10";
+                break;
+            case "NOVEMBER" :
+                monthNumber = "11";
+                break;
+            case "DECEMBER" :
+                monthNumber = "12";
+                break;
+        }
+        return monthNumber;
+    }
 
     public static FileBackedTasksManager loadTaskManagerMemory(File file) {
         FileBackedTasksManager backedManager = new FileBackedTasksManager();
@@ -111,12 +113,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                     String lines = reader.readLine();
                     String[] line = lines.split(",");
                     if (line.length > 5) if (line[5].equals("SIMPLE_TASK")) {
-                        SimpleTask task = new SimpleTask(line[1], line[2], getTaskStatus(line[3]));
+                        SimpleTask task = new SimpleTask(line[1], line[2],
+                                getTaskStatus(line[3]), getCurrentFormatStringDateFromString(line[6]),
+                                line[7], Integer.parseInt(line[8]));
                         task.setIndex(Integer.parseInt(line[0]));
                         backedManager.tasks.put(task.getIndex(), task);
                     } else if (line[5].equals("EPIC_TASK")) {
                         EpicTask task = new EpicTask(line[1], line[2], getTaskStatus(line[3]));
-
                         task.setIndex(Integer.parseInt(line[0]));
                         String subTaskList = line[4];
                         StringBuilder stringBuilder = new StringBuilder(subTaskList);
@@ -129,7 +132,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                         backedManager.tasks.put(task.getIndex(), task);
 
                     } else if (line[5].equals("SUBTASK")) {
-                        SubTask task = new SubTask(Integer.parseInt(line[4]), line[1], line[2], getTaskStatus(line[3]));
+                        SubTask task = new SubTask(Integer.parseInt(line[4]), line[1], line[2], getTaskStatus(line[3]),
+                                getCurrentFormatStringDateFromString(line[6]), line[7], Integer.parseInt(line[8]));
                         task.setIndex(Integer.parseInt(line[0]));
                        backedManager.tasks.put(task.getIndex(), task);
                     }
@@ -149,15 +153,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                 String line = br.readLine();
                 if (line.equals("history")) {
                     String history = br.readLine();
-                    StringBuilder builder = new StringBuilder(history);
+                   if (history != null) {
+                       StringBuilder builder = new StringBuilder(history);
 
-                    builder.reverse();
-                    line = builder.toString();
-                    String[] taskID = line.split(",");
+                       builder.reverse();
+                       line = builder.toString();
+                       String[] taskID = line.split(",");
 
-                    for (int i = 1; i < taskID.length; i++) {
-                        backedManager.history.add(tasks.get(Integer.parseInt(taskID[i])));
-                    }
+                       for (int i = 1; i < taskID.length; i++) {
+                           backedManager.history.add(tasks.get(Integer.parseInt(taskID[i])));
+                       }
+                   } else throw new NullPointerException("История пуста");
                 }
             }
         } catch (IOException e) {
@@ -167,12 +173,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
     }
 
     private static TaskStatus getTaskStatus(String status){
-        if (status.equals("NEW")){
-            return TaskStatus.NEW;
-        } else if (status.equals("IN_PROGRESS")){
-            return TaskStatus.IN_PROGRESS;
-        } else if (status.equals("DONE")){
-            return TaskStatus.DONE;
+        switch (status) {
+            case "NEW":
+                return TaskStatus.NEW;
+            case "IN_PROGRESS":
+                return TaskStatus.IN_PROGRESS;
+            case "DONE":
+                return TaskStatus.DONE;
         }
         return null;
     }
@@ -184,32 +191,50 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                 task.getDescription() + "," +
                 task.getStatus() + ",";
 
+
         if (task instanceof EpicTask) {
             line += ((EpicTask) task).subTaskId + ",";
             line += TaskType.EPIC_TASK;
+
         }
 
         if (task instanceof SimpleTask) {
             line += " ,";
-            line += TaskType.SIMPLE_TASK;
+            line += TaskType.SIMPLE_TASK + ",";
+            line += task.getStartTime().getYear() + " " +
+                    task.getStartTime().getMonth() + " " +
+                    task.getStartTime().getDayOfMonth() + "," +
+                    task.getStartTime().getHour() + ":" +
+                    task.getStartTime().getMinute() + "," +
+                    task.getDuration();
         }
         if (task instanceof SubTask) {
             line += ((SubTask) task).getEpicTaskId() + ",";
-            line += TaskType.SUBTASK;
+            line += TaskType.SUBTASK + ",";
+            line += task.getStartTime().getYear() + " " +
+                    task.getStartTime().getMonth() + " " +
+                    task.getStartTime().getDayOfMonth() + "," +
+                    task.getStartTime().getHour() + ":" +
+                    task.getStartTime().getMinute() + "," +
+                    task.getDuration();
         }
 
         return line + "\n";
     }
     @Override
     public void createEpicTask(EpicTask task) {
-        super.createEpicTask(task);
-        save();
+        if (task != null) {
+            super.createEpicTask(task);
+            save();
+        } else throw new NullPointerException("Ошибка создания задачи");
     }
 
     @Override
     public void createSimpleTask(SimpleTask task) {
-        super.createSimpleTask(task);
-        save();
+        if (task != null) {
+            super.createSimpleTask(task);
+            save();
+        } else throw new NullPointerException("Ошибка создания задачи");
     }
 
     @Override
@@ -238,8 +263,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
     }
 
     @Override
-    public void updateStatusEpicTask(EpicTask task) {
-        super.updateStatusEpicTask(task);
+    public void updateEpicTaskStatus(EpicTask task) {
+        super.updateEpicTaskStatus(task);
     }
 
     @Override
@@ -304,7 +329,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
 
     @Override
     public List<Task> getHistory() {
-
         save();
         return super.getHistory();
     }
