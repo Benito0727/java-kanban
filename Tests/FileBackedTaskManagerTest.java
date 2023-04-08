@@ -17,11 +17,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTasksMa
    }
 
 
-    @AfterEach
-    void tearDown() throws IOException {
-        manager = null;
-        Files.deleteIfExists(Path.of("resources/taskManager.csv"));
-    }
+//    @AfterEach
+//    void tearDown() throws IOException {
+//        manager = null;
+//        Files.deleteIfExists(Path.of("resources/taskManager.csv"));
+//    }
 
     @Test
     public void shouldLoadTaskManagerFromFile(){
