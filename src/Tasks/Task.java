@@ -1,8 +1,6 @@
 package Tasks;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -22,29 +20,22 @@ public abstract class Task {
         this.status = status;
     }
 
-    public Task(String title, String description, TaskStatus status, String dateToStars, String timeToStart, long timeInMinutes) {
+    public Task(String title, String description, TaskStatus status, LocalDateTime startTime, long timeInMinutes) {
         this.title = title;
         this.description = description;
         this.status = status;
-        this.startTime = LocalDateTime.of(getLocalDate(dateToStars), getLocalTime(timeToStart));
+        this.startTime = startTime;
         this.duration = timeInMinutes;
         endTime = setEndTime();
-    }
-
-    public LocalTime getLocalTime(String time) {
-        String[] parts = time.split(":");
-        return LocalTime.of(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
-    }
-
-
-    public LocalDate getLocalDate(String data){
-        String[] parts = data.split(" ");
-        return LocalDate.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
     }
 
     public LocalDateTime setEndTime(){
         endTime = Objects.requireNonNull(startTime).plusMinutes(this.duration);
         return endTime;
+    }
+
+    public void setEndTime(LocalDateTime newEndTime) {
+        this.endTime = newEndTime;
     }
 
     public void setStartTime(LocalDateTime startTime){
@@ -53,11 +44,13 @@ public abstract class Task {
 
 
     public boolean overloop(Task task){
-        if (!getStartTime().isAfter(task.getStartTime())) {
-            return overloop(this, task);
-        } else {
-            return overloop(task, this);
-        }
+        if (getStartTime() != null) {
+            if (!getStartTime().isAfter(task.getStartTime())) {
+                return overloop(this, task);
+            } else {
+                return overloop(task, this);
+            }
+        } else return false;
     }
 
     private static boolean overloop(Task task, Task otherTask) {

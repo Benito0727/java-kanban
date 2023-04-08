@@ -5,6 +5,9 @@ import Exception.*;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,12 +56,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
         }
     }
 
-    private static String getCurrentFormatStringDateFromString(String str) {
+    private static LocalDate getLocalDateFromString(String str) {
         String[] date = str.split(" ");
         String year = date[0];
         String month = date[1];
         String day = date[2];
-        return day + " " + getMonthNumberFromName(month) + " " + year;
+        return LocalDate.of(Integer.parseInt(year),
+                Integer.parseInt(getMonthNumberFromName(month)),
+                Integer.parseInt(day));
+    }
+
+    private static LocalTime getLocalTimeFromString(String str){
+        String[] time = str.split(":");
+        String hour = time[0];
+        String minute = time[1];
+        return LocalTime.of(Integer.parseInt(hour), Integer.parseInt(minute));
     }
 
 
@@ -114,8 +126,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                     String[] line = lines.split(",");
                     if (line.length > 5) if (line[5].equals("SIMPLE_TASK")) {
                         SimpleTask task = new SimpleTask(line[1], line[2],
-                                getTaskStatus(line[3]), getCurrentFormatStringDateFromString(line[6]),
-                                line[7], Integer.parseInt(line[8]));
+                                getTaskStatus(line[3]),LocalDateTime.of(getLocalDateFromString(line[6]),
+                                getLocalTimeFromString(line[7])) , Integer.parseInt(line[8]));
                         task.setIndex(Integer.parseInt(line[0]));
                         backedManager.tasks.put(task.getIndex(), task);
                     } else if (line[5].equals("EPIC_TASK")) {
@@ -129,11 +141,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                         for (String id : ids) {
                             task.subTaskId.add(Integer.parseInt(id));
                         }
+                        backedManager.updateEpicTaskStatus(task);
                         backedManager.tasks.put(task.getIndex(), task);
 
                     } else if (line[5].equals("SUBTASK")) {
                         SubTask task = new SubTask(Integer.parseInt(line[4]), line[1], line[2], getTaskStatus(line[3]),
-                                getCurrentFormatStringDateFromString(line[6]), line[7], Integer.parseInt(line[8]));
+                                LocalDateTime.of(getLocalDateFromString(line[6]),
+                                        getLocalTimeFromString(line[7])), Integer.parseInt(line[8]));
                         task.setIndex(Integer.parseInt(line[0]));
                        backedManager.tasks.put(task.getIndex(), task);
                     }

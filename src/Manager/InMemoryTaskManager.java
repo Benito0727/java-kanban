@@ -43,7 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void createSubTask(SubTask task) { // по ид эпика создает ему субтаск
         if (task != null && tasks.containsKey(task.getEpicTaskId())) {
             for (Task values : getPrioritisedTask()) {
-                if (task.overloop(values)) throw new IllegalStateException("Время задач пересекается");
+                if (task.overloop(values) && !(task.equals(values))) throw new IllegalStateException("Время задач пересекается");
             }
             EpicTask epic = (EpicTask) tasks.get(task.getEpicTaskId());
             epic.subTaskId.add(taskId);
@@ -83,7 +83,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpicTaskStatus(EpicTask task) { // изменение статуса эпика в зависимости от его подзадач
         int count = 0;
-
         for (Integer taskId : task.subTaskId) {
             if (tasks.get(taskId) == null) {
                 task.setStatus(TaskStatus.NEW);
@@ -102,21 +101,25 @@ public class InMemoryTaskManager implements TaskManager {
                     task.setStatus(TaskStatus.DONE);
                 }
             }
+            updateEpicTaskTime(task);
+        }
+    }
 
-            if (tasks.get(taskId) != null) {
-                if (task.getStartTime() == null) {
-                    task.setStartTime(tasks.get(taskId).getStartTime());
-                } else {
-                    if (tasks.get(taskId).getStartTime() != null) {
-
-                        if (task.getStartTime().isBefore(tasks.get(taskId).getStartTime())) {
-                            task.setStartTime(tasks.get(taskId).getStartTime());
-                        }
+    private void updateEpicTaskTime(EpicTask task){
+        if (tasks.get(taskId) != null) {
+            if (task.getStartTime() == null) {
+                task.setStartTime(tasks.get(taskId).getStartTime());
+            } else {
+                if (tasks.get(taskId).getStartTime() != null) {
+                    if (!task.getStartTime().isBefore(tasks.get(taskId).getStartTime())) {
+                        task.setStartTime(tasks.get(taskId).getStartTime());
                     }
-                    if (tasks.get(taskId).getEndTime() != null) {
-                        if (tasks.get(taskId).getEndTime().isAfter(tasks.get(taskId).getEndTime())) {
-                            task.setStartTime(tasks.get(taskId).getEndTime());
-                        }
+                }
+                if (tasks.get(taskId).getEndTime() != null) {
+                    if (task.getEndTime() == null) {
+                        task.setEndTime(tasks.get(taskId).getEndTime());
+                    } else if (task.getEndTime().isBefore(tasks.get(taskId).getEndTime())) {
+                        task.setEndTime(tasks.get(taskId).getEndTime());
                     }
                 }
             }

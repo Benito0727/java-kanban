@@ -1,6 +1,7 @@
 package Tasks;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EpicTask extends Task {
 
@@ -12,27 +13,35 @@ public class EpicTask extends Task {
         super(title, description, status);
     }
 
-    public EpicTask(String title,
-                    String description,
-                    TaskStatus status,
-                    String dateToStart,
-                    String timeToStart,
-                    long duration)
-    {
-        super(title,description,status,dateToStart,timeToStart,duration);
-    }
-
-
 
     @Override
     public String toString() {
-        return "Task{" +
+        String str = "Task{" +
                 "index=" + getIndex() +
                 ", title='" + getTitle() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status='" + getStatus() + '\'' +
-                ", subTaskId='" + subTaskId + '\'' +
-                ", date='" + getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")) + '\'' +
-                '}';
+                ", subTaskId='" + subTaskId + '\'';
+
+        if (getStartTime() != null) {
+            str += ", date='" + getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")) + '\'' +
+                    '}';
+        }
+        return str;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        EpicTask epicTask = (EpicTask) o;
+        return subTaskId.equals(epicTask.subTaskId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subTaskId);
     }
 }
