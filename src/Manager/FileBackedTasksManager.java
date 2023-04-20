@@ -16,7 +16,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
     final private File managerCSV = new File("resources/taskManager.csv");
 
     void save() {
-
         try {
             Files.deleteIfExists(managerCSV.toPath());
             Files.createFile(managerCSV.toPath());
@@ -49,9 +48,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
             } else {
                 throw new ManagerException("Отсутствует файл сохранения");
             }
-        } catch (ManagerException e){
-            System.out.println(e.getMessage());
-        } catch (RuntimeException | IOException e) {
+        } catch (RuntimeException | IOException e){
             System.out.println(e.getMessage());
         }
     }
@@ -215,22 +212,26 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
         if (task instanceof SimpleTask) {
             line += " ,";
             line += TaskType.SIMPLE_TASK + ",";
-            line += task.getStartTime().getYear() + " " +
-                    task.getStartTime().getMonth() + " " +
-                    task.getStartTime().getDayOfMonth() + "," +
-                    task.getStartTime().getHour() + ":" +
-                    task.getStartTime().getMinute() + "," +
-                    task.getDuration();
+            if (task.getStartTime() != null) {
+                line += task.getStartTime().getYear() + " " +
+                        task.getStartTime().getMonth() + " " +
+                        task.getStartTime().getDayOfMonth() + "," +
+                        task.getStartTime().getHour() + ":" +
+                        task.getStartTime().getMinute() + "," +
+                        task.getDuration();
+            }
         }
         if (task instanceof SubTask) {
             line += ((SubTask) task).getEpicTaskId() + ",";
             line += TaskType.SUBTASK + ",";
-            line += task.getStartTime().getYear() + " " +
-                    task.getStartTime().getMonth() + " " +
-                    task.getStartTime().getDayOfMonth() + "," +
-                    task.getStartTime().getHour() + ":" +
-                    task.getStartTime().getMinute() + "," +
-                    task.getDuration();
+            if (task.getStartTime() != null) {
+                line += task.getStartTime().getYear() + " " +
+                        task.getStartTime().getMonth() + " " +
+                        task.getStartTime().getDayOfMonth() + "," +
+                        task.getStartTime().getHour() + ":" +
+                        task.getStartTime().getMinute() + "," +
+                        task.getDuration();
+            }
         }
 
         return line + "\n";

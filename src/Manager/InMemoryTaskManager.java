@@ -10,6 +10,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     static HistoryManager history = Managers.getDefaultHistory();
 
+    public List<Task> taskHistory;
     static HashMap<Integer, Task> tasks = new HashMap<>();
 
 
@@ -83,25 +84,27 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpicTaskStatus(EpicTask task) { // изменение статуса эпика в зависимости от его подзадач
         int count = 0;
-        for (Integer taskId : task.subTaskId) {
-            if (tasks.get(taskId) == null) {
-                task.setStatus(TaskStatus.NEW);
-            } else {
-                for (Integer id : task.subTaskId) {
-                    if (tasks.get(id).getStatus().equals(TaskStatus.NEW)) {
-                        task.setStatus(TaskStatus.NEW);
-                    } else if (tasks.get(id).getStatus().equals(TaskStatus.IN_PROGRESS)){
-                        task.setStatus(TaskStatus.IN_PROGRESS);
-                    } else if (tasks.get(id).getStatus().equals(TaskStatus.DONE)){
-                        count++;
-                    } else count = 0;
+        if (task.subTaskId != null) {
+            for (Integer taskId : task.subTaskId) {
+                if (tasks.get(taskId) == null) {
+                    task.setStatus(TaskStatus.NEW);
+                } else {
+                    for (Integer id : task.subTaskId) {
+                        if (tasks.get(id).getStatus().equals(TaskStatus.NEW)) {
+                            task.setStatus(TaskStatus.NEW);
+                        } else if (tasks.get(id).getStatus().equals(TaskStatus.IN_PROGRESS)) {
+                            task.setStatus(TaskStatus.IN_PROGRESS);
+                        } else if (tasks.get(id).getStatus().equals(TaskStatus.DONE)) {
+                            count++;
+                        } else count = 0;
 
+                    }
+                    if (count == task.subTaskId.size()) {
+                        task.setStatus(TaskStatus.DONE);
+                    }
                 }
-                if (count == task.subTaskId.size()) {
-                    task.setStatus(TaskStatus.DONE);
-                }
+                updateEpicTaskTime(task);
             }
-            updateEpicTaskTime(task);
         }
     }
 
@@ -307,6 +310,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory(){
         if (!(history.getHistory().isEmpty())) {
+            taskHistory = history.getHistory();
             return history.getHistory();
         } else throw new NullPointerException("История пуста");
     }

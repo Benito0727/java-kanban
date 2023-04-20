@@ -10,4 +10,13 @@ public class Managers {
     public static InMemoryTaskManager getDefault() {
         return new InMemoryTaskManager();
     }
+
+    public static FileBackedTasksManager getFileManager() {
+        return new FileBackedTasksManager();
+    }
+
+    public static HttpTaskManager getHttpManager() {
+        return new HttpTaskManager();
+    }
+
 }

@@ -76,5 +76,12 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="gson-2.9.0 (2)" level="project" />
+    <orderEntry type="library" name="commons-io-2.11.0-tests" level="project" />
+    <orderEntry type="library" name="commons-io-2.11.0-test-sources" level="project" />
+    <orderEntry type="library" name="commons-io-2.11.0-sources" level="project" />
+    <orderEntry type="library" name="commons-io-2.11.0-javadoc" level="project" />
+    <orderEntry type="library" name="commons-io-2.11.0-javadoc (2)" level="project" />
+    <orderEntry type="library" name="commons-io-2.11.0" level="project" />
   </component>
 </module>
