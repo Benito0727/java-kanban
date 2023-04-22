@@ -83,5 +83,7 @@
     <orderEntry type="library" name="commons-io-2.11.0-javadoc" level="project" />
     <orderEntry type="library" name="commons-io-2.11.0-javadoc (2)" level="project" />
     <orderEntry type="library" name="commons-io-2.11.0" level="project" />
+    <orderEntry type="library" name="flexjson-2" level="project" />
+    <orderEntry type="library" name="json-simple-1.1.1" level="project" />
   </component>
 </module>

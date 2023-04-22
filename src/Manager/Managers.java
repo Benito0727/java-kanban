@@ -17,8 +17,8 @@ public class Managers {
         return new FileBackedTasksManager();
     }
 
-    public static HttpTaskManager getHttpManager() throws IOException {
-        return new HttpTaskManager();
+    public static HttpTaskManager getHttpManager(String uri) throws IOException {
+        return new HttpTaskManager(uri);
     }
 
 }

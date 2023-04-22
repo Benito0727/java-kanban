@@ -1,4 +1,7 @@
 package Tasks;
+import Manager.TaskType;
+
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -6,11 +9,16 @@ import java.util.Objects;
 public class EpicTask extends Task {
 
 
-
     public ArrayList<Integer> subTaskId = new ArrayList<>();
 
-    public EpicTask(String title, String description, TaskStatus status) {
-        super(title, description, status);
+    public EpicTask(String title, String description, TaskStatus status, TaskType type) {
+        super(title, description, status, type);
+
+    }
+
+    public EpicTask(int index, String title, String description, TaskStatus status, TaskType type, ArrayList<Integer> id) {
+        super(index, title, description, status, type);
+        this.subTaskId = id;
     }
 
 

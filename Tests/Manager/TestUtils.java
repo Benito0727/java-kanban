@@ -18,6 +18,7 @@ public class TestUtils {
                 "  \"title\": \"epicName\",\n" +
                 "  \"description\": \"epicDescription\",\n" +
                 "  \"status\": \"NEW\",\n" +
+                "  \"type\": \"EPIC_TASK\",\n" +
                 "  \"startTime\": null,\n" +
                 "  \"duration\": 0,\n" +
                 "  \"endTime\": null\n" +
@@ -30,6 +31,7 @@ public class TestUtils {
                 "  \"title\": \"subName1\",\n" +
                 "  \"description\": \"subDescription1\",\n" +
                 "  \"status\": \"NEW\",\n" +
+                "  \"type\": \"SUBTASK\",\n" +
                 "  \"startTime\": \"2023-04-21 10:15:00\",\n" +
                 "  \"duration\": 15,\n" +
                 "  \"endTime\": \"2023-04-21 10:30:00\"\n" +
@@ -42,6 +44,7 @@ public class TestUtils {
                 "  \"title\": \"subName2\",\n" +
                 "  \"description\": \"subDescription2\",\n" +
                 "  \"status\": \"NEW\",\n" +
+                "  \"type\": \"SUBTASK\",\n" +
                 "  \"startTime\": \"2023-04-21 10:30:00\",\n" +
                 "  \"duration\": 15,\n" +
                 "  \"endTime\": \"2023-04-21 10:45:00\"\n" +
@@ -54,6 +57,7 @@ public class TestUtils {
                 "  \"title\": \"subName3\",\n" +
                 "  \"description\": \"subDescription3\",\n" +
                 "  \"status\": \"NEW\",\n" +
+                "  \"type\": \"SUBTASK\",\n" +
                 "  \"startTime\": \"2023-04-21 10:45:00\",\n" +
                 "  \"duration\": 15,\n" +
                 "  \"endTime\": \"2023-04-21 11:00:00\"\n" +
@@ -61,10 +65,11 @@ public class TestUtils {
     }
     public static String simpleInString() {
         return "{\n" +
-                "  \"index\": 0,\n" +
+                "  \"index\": 1,\n" +
                 "  \"title\": \"simpleName\",\n" +
                 "  \"description\": \"simpleDescription\",\n" +
                 "  \"status\": \"NEW\",\n" +
+                "  \"type\": \"SIMPLE_TASK\",\n" +
                 "  \"startTime\": \"2023-04-21 11:30:00\",\n" +
                 "  \"duration\": 30,\n" +
                 "  \"endTime\": \"2023-04-21 12:00:00\"\n" +

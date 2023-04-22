@@ -1,5 +1,7 @@
 package Tasks;
 
+import Manager.TaskType;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -10,20 +12,48 @@ public abstract class Task {
     private final String title;
     private final String description;
     private TaskStatus status;
+    private TaskType type;
     private LocalDateTime startTime;
     private long duration;
     private LocalDateTime endTime;
 
-    public Task(String title, String description, TaskStatus status) {
+
+    public Task(String title, String description, TaskStatus status, TaskType type) {
         this.title = title;
         this.description = description;
         this.status = status;
+        this.type = type;
     }
 
-    public Task(String title, String description, TaskStatus status, LocalDateTime startTime, long timeInMinutes) {
+    public Task(int index, String title, String description, TaskStatus status, TaskType type){
+        this.index = index;
         this.title = title;
         this.description = description;
         this.status = status;
+        this.type = type;
+    }
+
+    public Task(int index, String title, String description, TaskStatus status, TaskType type, LocalDateTime startTime, long duration) {
+        this.index = index;
+        this.title = title;
+        this.description = description;
+        this. status = status;
+        this.type = type;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
+    public TaskType getType() {
+        return type;
+    }
+
+    public Task(String title, String description,
+                TaskStatus status, TaskType type,
+                LocalDateTime startTime, long timeInMinutes) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.type = type;
         this.startTime = startTime;
         this.duration = timeInMinutes;
         endTime = setEndTime();
@@ -107,6 +137,7 @@ public abstract class Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
+                ", type='" + type + '\'' +
                 ", date='" + getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")) + '\'' +
                 '}';
     }

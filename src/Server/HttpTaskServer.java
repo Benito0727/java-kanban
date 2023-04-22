@@ -84,6 +84,7 @@ public class HttpTaskServer{
                         manager.createSimpleTask(task);
                         exchange.sendResponseHeaders(200, 0);
                         System.out.println("Задача " + task.getTitle() + " c ID "+ task.getIndex() + " успешно создана");
+                        System.out.println(gson.toJson(task));
                     }
                     if (Pattern.matches("/tasks/task/", path) && (id > 0)) {
                         SimpleTask task = gson.fromJson(readText(exchange), SimpleTask.class);

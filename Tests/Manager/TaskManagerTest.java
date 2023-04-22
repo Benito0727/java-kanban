@@ -1,6 +1,5 @@
 package Manager;
 
-import Manager.TaskManager;
 import Tasks.*;
 
 
@@ -24,20 +23,20 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @BeforeEach
     @Test
     public void createTaskStack() {
-        epicTask = new EpicTask("name", "description", TaskStatus.NEW);
+        epicTask = new EpicTask("name", "description", TaskStatus.NEW, TaskType.EPIC_TASK);
 
         LocalDateTime simpleTime = LocalDateTime.of(2023, 4, 7, 8, 0);
-        simpleTask = new SimpleTask("name", "description", TaskStatus.NEW,
+        simpleTask = new SimpleTask("name", "description", TaskStatus.NEW, TaskType.SIMPLE_TASK,
                 simpleTime, 10);
 
         LocalDateTime subTime1 = LocalDateTime.of(2023, 4, 7, 8, 20);
-        subTask1 = new SubTask(1, "name", "description", TaskStatus.NEW,
+        subTask1 = new SubTask(1, "name", "description", TaskStatus.NEW, TaskType.SUBTASK,
                 subTime1, 10);
         LocalDateTime subTime2 = LocalDateTime.of(2023, 4, 7, 8, 40);
-        subTask2 = new SubTask(1, "name", "description", TaskStatus.NEW,
+        subTask2 = new SubTask(1, "name", "description", TaskStatus.NEW, TaskType.SUBTASK,
                 subTime2, 10);
         LocalDateTime subTime3 = LocalDateTime.of(2023, 4, 7, 10, 30);
-        subTask3 = new SubTask(1, "name", "description", TaskStatus.NEW,
+        subTask3 = new SubTask(1, "name", "description", TaskStatus.NEW, TaskType.SUBTASK,
                 subTime3, 50);
     }
 
@@ -90,7 +89,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldUpdateSimpleTask() {
         manager.createSimpleTask(simpleTask);
         LocalDateTime time = LocalDateTime.of(2023, 4, 8, 12, 0);
-        SimpleTask simpleTask2 = new SimpleTask("otherTitle", "otherDescription", TaskStatus.NEW,
+        SimpleTask simpleTask2 = new SimpleTask("otherTitle", "otherDescription", TaskStatus.NEW, TaskType.SIMPLE_TASK,
         time, 60);
         manager.updateSimpleTask(1, simpleTask2);
         assertEquals(manager.getSimpleTaskById(1), simpleTask2);
@@ -102,14 +101,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         LocalDateTime time = LocalDateTime.of(2023, 4, 7, 9, 40);
         SubTask otherSubtask = new SubTask(1, "otherTitle",
                 "otherDescription",
-                TaskStatus.IN_PROGRESS, time, 30);
+                TaskStatus.IN_PROGRESS, TaskType.SUBTASK, time, 30);
         manager.updateSubTask(2, otherSubtask);
         assertEquals(manager.getSubTaskById(2), otherSubtask);
     }
     @Test
     public void shouldUpdateEpicTask() {
         manager.createEpicTask(epicTask);
-        EpicTask epicTask2 = new EpicTask("otherTitle", "otherDescription", TaskStatus.NEW);
+        EpicTask epicTask2 = new EpicTask("otherTitle", "otherDescription", TaskStatus.NEW, TaskType.SUBTASK);
         manager.updateEpicTask(1, epicTask2);
         assertEquals(manager.getEpicTaskById(1), epicTask2);
     }
@@ -369,16 +368,16 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         LocalDateTime time1 = LocalDateTime.of(2023, 4, 6, 16, 0);
         manager.createSubTask(
                 new SubTask(1, "name",
-                        "description", TaskStatus.NEW,
+                        "description", TaskStatus.NEW, TaskType.SUBTASK,
                         time1,
                         20));
         LocalDateTime time2 = LocalDateTime.of(2023, 4, 6, 16, 30);
         manager.createSubTask(new SubTask(1, "name",
-                "description", TaskStatus.NEW,
+                "description", TaskStatus.NEW, TaskType.SUBTASK,
                 time2, 20));
         LocalDateTime time3 = LocalDateTime.of(2023, 4, 6, 17, 0);
         manager.createSimpleTask(new SimpleTask("name", "description",
-                TaskStatus.NEW, time3, 20));
+                TaskStatus.NEW, TaskType.SIMPLE_TASK, time3, 20));
 
         for (Task task : manager.getPrioritisedTask()) {
             System.out.println(task);

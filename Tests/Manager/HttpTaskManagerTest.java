@@ -39,7 +39,7 @@ class HttpTaskManagerTest {
 
     HttpTaskManagerTest() throws IOException {
         kvServer.start();
-        manager = new HttpTaskManager();
+        manager = new HttpTaskManager("http://localhost:7540");
         taskServer = new HttpTaskServer(manager);
         client = HttpClient.newHttpClient();
         uriString = "http://localhost:7880/tasks/";
@@ -48,15 +48,12 @@ class HttpTaskManagerTest {
 
     @BeforeEach
     public void startServer() throws IOException {
-
         taskServer.start();
     }
 
     @AfterEach
     public void stopServer(){
         taskServer.stop();
-
-
     }
 
     private static Gson getGson(){
@@ -132,12 +129,10 @@ class HttpTaskManagerTest {
                 header("Content-Type", "application/json").
                 build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
         assertEquals(200, response.statusCode());
-        assertNotNull(manager.getSimpleTaskById(1));
-
         HttpTaskManager newManager = KVTaskClient.load();
-        assertNull(newManager.getSimpleTaskById(1));
+
+        assertNotNull(newManager);
         assertNotNull(newManager.getSimpleTaskById(1));
     }
 }

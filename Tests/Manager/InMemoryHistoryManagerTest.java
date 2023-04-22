@@ -11,7 +11,7 @@ class InMemoryHistoryManagerTest  {
 
     @Test
     void add() {
-        SimpleTask simpleTask = new SimpleTask("name", "description", TaskStatus.NEW);
+        SimpleTask simpleTask = new SimpleTask("name", "description", TaskStatus.NEW, TaskType.SIMPLE_TASK);
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
         historyManager.add(simpleTask);
 
@@ -20,7 +20,7 @@ class InMemoryHistoryManagerTest  {
 
     @Test
     void getHistory() {
-        SimpleTask simpleTask = new SimpleTask("name", "description", TaskStatus.NEW);
+        SimpleTask simpleTask = new SimpleTask("name", "description", TaskStatus.NEW, TaskType.SIMPLE_TASK);
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
         historyManager.add(simpleTask);
 
@@ -29,7 +29,7 @@ class InMemoryHistoryManagerTest  {
 
     @Test
     void remove() {
-        SimpleTask simpleTask = new SimpleTask("name", "description", TaskStatus.NEW);
+        SimpleTask simpleTask = new SimpleTask("name", "description", TaskStatus.NEW, TaskType.SIMPLE_TASK);
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
         historyManager.add(simpleTask);
 
@@ -39,7 +39,7 @@ class InMemoryHistoryManagerTest  {
 
     @Test
     void clearHistory() {
-        SimpleTask simpleTask = new SimpleTask("name", "description", TaskStatus.NEW);
+        SimpleTask simpleTask = new SimpleTask("name", "description", TaskStatus.NEW, TaskType.SIMPLE_TASK);
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
         historyManager.add(simpleTask);
 

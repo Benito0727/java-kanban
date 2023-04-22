@@ -123,12 +123,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                     String[] line = lines.split(",");
                     if (line.length > 5) if (line[5].equals("SIMPLE_TASK")) {
                         SimpleTask task = new SimpleTask(line[1], line[2],
-                                getTaskStatus(line[3]),LocalDateTime.of(getLocalDateFromString(line[6]),
+                                getTaskStatus(line[3]), TaskType.SIMPLE_TASK, LocalDateTime.of(getLocalDateFromString(line[6]),
                                 getLocalTimeFromString(line[7])) , Integer.parseInt(line[8]));
                         task.setIndex(Integer.parseInt(line[0]));
                         backedManager.tasks.put(task.getIndex(), task);
                     } else if (line[5].equals("EPIC_TASK")) {
-                        EpicTask task = new EpicTask(line[1], line[2], getTaskStatus(line[3]));
+                        EpicTask task = new EpicTask(line[1], line[2], getTaskStatus(line[3]), TaskType.EPIC_TASK);
                         task.setIndex(Integer.parseInt(line[0]));
                         String subTaskList = line[4];
                         StringBuilder stringBuilder = new StringBuilder(subTaskList);
@@ -143,7 +143,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
 
                     } else if (line[5].equals("SUBTASK")) {
                         SubTask task = new SubTask(Integer.parseInt(line[4]), line[1], line[2], getTaskStatus(line[3]),
-                                LocalDateTime.of(getLocalDateFromString(line[6]),
+                                TaskType.SUBTASK, LocalDateTime.of(getLocalDateFromString(line[6]),
                                         getLocalTimeFromString(line[7])), Integer.parseInt(line[8]));
                         task.setIndex(Integer.parseInt(line[0]));
                         backedManager.tasks.put(task.getIndex(), task);
