@@ -1,25 +1,34 @@
 package Client;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import Manager.HttpTaskManager;
+import Tasks.Task;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 
 import static java.net.URI.create;
 
 public class KVTaskClient {
 
-    private final Gson gson = new Gson();
-    private final URI uri;
-    private final HttpClient client;
-    private final String API_TOKEN;
+    private static final Gson gson = new Gson();
+    private static URI uri;
+    private static  HttpClient client;
+    private static String API_TOKEN;
+
 
     public KVTaskClient(String uriString){
-        this.client = HttpClient.newHttpClient();
-        this.uri = URI.create(uriString);
+        client = HttpClient.newHttpClient();
+        uri = URI.create(uriString);
         API_TOKEN = register(uri);
     }
 
@@ -29,7 +38,7 @@ public class KVTaskClient {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return response.body();
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getCause());
         }
     }
 
@@ -49,17 +58,34 @@ public class KVTaskClient {
         }
     }
 
-    public String load(String key){
-        HttpRequest request = HttpRequest.newBuilder().
-                GET().
-                uri(URI.create(uri + key + "?API_TOKEN=" + API_TOKEN)).
-                build();
+    public static HttpTaskManager load(){
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return gson.toJson(response.body());
+            HttpTaskManager manager = new HttpTaskManager();
+            HttpRequest taskRequest = HttpRequest.newBuilder().
+                GET().
+                uri(URI.create(uri + "/load/task" + "?API_TOKEN=" + API_TOKEN)).
+                build();
+            HttpRequest historyRequest = HttpRequest.newBuilder().
+                GET().
+                uri(URI.create(uri + "/load/history" + "?API_TOKEN=" + API_TOKEN)).
+                build();
+            HttpResponse<String> taskResponse = client.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+            String task = taskResponse.body();
+            HttpResponse<String> historyResponse = client.send(historyRequest, HttpResponse.BodyHandlers.ofString());
+            String history = historyResponse.body();
+            if (task != null) {
+                Type mapType = new TypeToken<HashMap<Integer, Task>>() {}.getType();
+                HashMap<Integer, Task> map = gson.fromJson(task, mapType);
+            }
+            if (history != null) {
+                Type listType = new TypeToken<ArrayList<Task>>(){}.getType();
+                ArrayList<Task> list = gson.fromJson(history, listType);
+                manager.taskHistory.addAll(list);
+            }
+            return manager;
         } catch (IOException | InterruptedException e) {
             e.getStackTrace();
-            return "";
+            return null;
         }
     }
 }

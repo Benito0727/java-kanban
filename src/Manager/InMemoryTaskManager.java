@@ -8,10 +8,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int taskId = 1;
 
-    static HistoryManager history = Managers.getDefaultHistory();
+    public HistoryManager history = Managers.getDefaultHistory();
 
     public List<Task> taskHistory;
-    static HashMap<Integer, Task> tasks = new HashMap<>();
+    public HashMap<Integer, Task> tasks = new HashMap<>();
 
 
     @Override
@@ -109,20 +109,24 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updateEpicTaskTime(EpicTask task){
-        if (tasks.get(taskId) != null) {
-            if (task.getStartTime() == null) {
-                task.setStartTime(tasks.get(taskId).getStartTime());
-            } else {
-                if (tasks.get(taskId).getStartTime() != null) {
-                    if (!task.getStartTime().isBefore(tasks.get(taskId).getStartTime())) {
-                        task.setStartTime(tasks.get(taskId).getStartTime());
-                    }
-                }
-                if (tasks.get(taskId).getEndTime() != null) {
-                    if (task.getEndTime() == null) {
-                        task.setEndTime(tasks.get(taskId).getEndTime());
-                    } else if (task.getEndTime().isBefore(tasks.get(taskId).getEndTime())) {
-                        task.setEndTime(tasks.get(taskId).getEndTime());
+        if (task.subTaskId != null) {
+            for (Integer id : task.subTaskId) {
+                if (tasks.get(id) != null) {
+                    if (task.getStartTime() == null) {
+                        task.setStartTime(tasks.get(id).getStartTime());
+                    } else {
+                        if (tasks.get(id).getStartTime() != null) {
+                            if (!task.getStartTime().isBefore(tasks.get(id).getStartTime())) {
+                                task.setStartTime(tasks.get(id).getStartTime());
+                            }
+                        }
+                        if (tasks.get(id).getEndTime() != null) {
+                            if (task.getEndTime() == null) {
+                                task.setEndTime(tasks.get(id).getEndTime());
+                            } else if (task.getEndTime().isBefore(tasks.get(id).getEndTime())) {
+                                task.setEndTime(tasks.get(id).getEndTime());
+                            }
+                        }
                     }
                 }
             }

@@ -1,7 +1,9 @@
-import Manager.FileBackedTasksManager;
+package Manager;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.File;
@@ -25,19 +27,17 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTasksMa
 
     @Test
     public void shouldLoadTaskManagerFromFile(){
-        manager.createEpicTask(epicTask);
-        manager.createSimpleTask(simpleTask);
-        manager.createSubTask(subTask1);
+        manager.createEpicTask(TaskManagerTest.epicTask);
+        manager.createSimpleTask(TaskManagerTest.simpleTask);
+        manager.createSubTask(TaskManagerTest.subTask1);
         manager.getEpicTaskById(1);
         manager.getHistory();
-
         FileBackedTasksManager otherManager = FileBackedTasksManager.loadTaskManagerMemory(
                 new File("resources/taskManager.csv")
         );
-
-        assertEquals(epicTask, otherManager.getEpicTaskById(1));
-        assertEquals(simpleTask, otherManager.getSimpleTaskById(2));
-        assertEquals(subTask1, otherManager.getSubTaskById(3));
+        assertEquals(TaskManagerTest.epicTask, otherManager.getEpicTaskById(1));
+        assertEquals(TaskManagerTest.simpleTask, otherManager.getSimpleTaskById(2));
+        assertEquals(TaskManagerTest.subTask1, otherManager.getSubTaskById(3));
    }
 
 

@@ -1,5 +1,7 @@
 package Manager;
 
+import java.io.IOException;
+
 public class Managers {
 
     public static HistoryManager getDefaultHistory() {
@@ -15,7 +17,7 @@ public class Managers {
         return new FileBackedTasksManager();
     }
 
-    public static HttpTaskManager getHttpManager() {
+    public static HttpTaskManager getHttpManager() throws IOException {
         return new HttpTaskManager();
     }
 

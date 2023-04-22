@@ -19,18 +19,19 @@ import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 
+import static com.sun.net.httpserver.HttpServer.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HttpTaskServer{
 
     private final Gson gson;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private static final int PORT = 8080;
+    private static final int PORT = 7880;
     private final HttpServer server;
     private final TaskManager manager;
 
-    public HttpTaskServer() throws IOException {
-        manager = Managers.getHttpManager();
+    public HttpTaskServer(TaskManager taskManager) throws IOException {
+        manager = taskManager;
         server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
         gson = getGson();
         server.createContext("/tasks/epic/", this::epicHandler);
@@ -38,10 +39,16 @@ public class HttpTaskServer{
         server.createContext("/tasks/sub/", this::subHandler);
         server.createContext("/tasks/", this::tasksHandler);
     }
+
+
     public void start() {
         System.out.println("Запускаем сервер на порту " + PORT);
         System.out.println("http://localhost:" + PORT + "/tasks/");
         server.start();
+    }
+    public void stop(){
+        System.out.println("Останавливаем сервер на порту " + PORT);
+        server.stop(0);
     }
 
     private void handleTask(HttpExchange exchange) {
@@ -223,12 +230,13 @@ public class HttpTaskServer{
                             }
 
                     }
+                    break;
                 case "POST" :
                     if ((id == -1) && (Pattern.matches("^/tasks/sub/$", path))) {
                         SubTask task = gson.fromJson(readText(exchange), SubTask.class);
                         manager.createSubTask(task);
                         exchange.sendResponseHeaders(200, 0);
-                        System.out.println("Подзадача для эпика " + task.getEpicTaskId() + " c  ID " +
+                        System.out.println("Подзадача для эпика c ID: " + task.getEpicTaskId() + " под ID: " +
                                 task.getIndex() + " успешно создана");
                     }
                     if ((id > 0) && (Pattern.matches("/tasks/sub", path))) {
@@ -236,6 +244,7 @@ public class HttpTaskServer{
                         manager.updateSubTask(id, task);
                         exchange.sendResponseHeaders(200, 0);
                     }
+                    break;
                 case "DELETE" :
                     if ((id == -1) && (Pattern.matches("^/tasks/sub/$", path))) {
                         manager.cleanSubTasks();
@@ -245,7 +254,7 @@ public class HttpTaskServer{
                         manager.removeTaskById(id);
                         exchange.sendResponseHeaders(200, 0);
                     }
-
+                    break;
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,3 +1,5 @@
+package Manager;
+
 import Manager.InMemoryHistoryManager;
 import Tasks.SimpleTask;
 import Tasks.TaskStatus;

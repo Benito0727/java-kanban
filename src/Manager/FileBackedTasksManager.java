@@ -138,15 +138,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                         for (String id : ids) {
                             task.subTaskId.add(Integer.parseInt(id));
                         }
-                        backedManager.updateEpicTaskStatus(task);
                         backedManager.tasks.put(task.getIndex(), task);
+                        backedManager.updateEpicTaskStatus(task);
 
                     } else if (line[5].equals("SUBTASK")) {
                         SubTask task = new SubTask(Integer.parseInt(line[4]), line[1], line[2], getTaskStatus(line[3]),
                                 LocalDateTime.of(getLocalDateFromString(line[6]),
                                         getLocalTimeFromString(line[7])), Integer.parseInt(line[8]));
                         task.setIndex(Integer.parseInt(line[0]));
-                       backedManager.tasks.put(task.getIndex(), task);
+                        backedManager.tasks.put(task.getIndex(), task);
+                        for (Task value : backedManager.tasks.values()) {
+                            if (value instanceof EpicTask) {
+                                backedManager.updateEpicTaskStatus((EpicTask) value);
+                            }
+                        }
                     }
 
                 }
@@ -172,7 +177,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                        String[] taskID = line.split(",");
 
                        for (int i = 1; i < taskID.length; i++) {
-                           backedManager.history.add(tasks.get(Integer.parseInt(taskID[i])));
+                           backedManager.history.add(backedManager.tasks.get(Integer.parseInt(taskID[i])));
                        }
                    } else throw new NullPointerException("История пуста");
                 }
