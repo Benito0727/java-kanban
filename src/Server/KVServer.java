@@ -44,6 +44,9 @@ public class KVServer {
 				}
 				if (data.get(key) != null) {
 					sendText(h, data.get(key));
+				} else {
+					System.out.println("В памяти нет записей по ключу");
+					h.sendResponseHeaders(400, 0);
 				}
 			} else {
 				System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());

@@ -4,16 +4,12 @@ import Client.KVTaskClient;
 import Converter.LocalDateTimeJsonConverter;
 import Server.HttpTaskServer;
 import Server.KVServer;
-import Tasks.SimpleTask;
 import Tasks.Task;
-import Tasks.TaskStatus;
 import com.google.gson.*;
 
 import java.io.IOException;
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class HttpTaskManager extends FileBackedTasksManager {
@@ -24,16 +20,14 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private static KVTaskClient clientKV;
 
     public static void main(String[] args) throws IOException {
-//        KVServer kv = new KVServer();
-//        kv.start();
-//        HttpTaskManager manager = Managers.getHttpManager("http://localhost:7540");
-//        HttpTaskServer server = new HttpTaskServer(manager);
-//        server.start();
-
-
+        KVServer kv = new KVServer();
+        kv.start();
+        HttpTaskManager manager = Managers.getHttpManager("http://localhost:7540");
+        HttpTaskServer server = new HttpTaskServer(manager);
+        server.start();
     }
 
-    public HttpTaskManager(String uri) throws IOException {
+    public HttpTaskManager(String uri){
         clientKV = new KVTaskClient(uri);
 
     }

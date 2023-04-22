@@ -84,12 +84,16 @@ public class KVTaskClient {
                 JsonElement jsonElement = JsonParser.parseString(taskResponse.body());
                 if (jsonElement.isJsonObject()) {
                      Task task = getTaskFromJsonObject(jsonElement);
-                     manager.tasks.put(task.getIndex(), task);
+                     if (task != null) {
+                         manager.tasks.put(task.getIndex(), task);
+                     }
                 } else {
                     JsonArray array = jsonElement.getAsJsonArray();
                     for (JsonElement element : array) {
                         Task task = getTaskFromJsonObject(element);
-                        manager.tasks.put(task.getIndex(), task);
+                        if (task != null) {
+                            manager.tasks.put(task.getIndex(), task);
+                        }
                     }
                 }
             }
@@ -108,7 +112,7 @@ public class KVTaskClient {
         String status = jsonObject.get("status").getAsString();
         String startTime = jsonObject.get("startTime").getAsString();
         long duration = jsonObject.get("duration").getAsLong();
-        int epicId = jsonObject.get("epicTaskId").getAsInt();
+
         switch (type) {
             case "SIMPLE_TASK" :
                 return new SimpleTask(index, title, description, getStatus(status), getType(type),
@@ -122,8 +126,12 @@ public class KVTaskClient {
                 }
                 return new EpicTask(index, title, description, getStatus(status), getType(type), subTaskId);
             case "SUBTASK" :
-                return new SubTask(index, epicId, title, description, getStatus(status), getType(type),
-                        getLocalDateTimeFromString(startTime), duration);
+                if (jsonObject.get("epicTaskId") != null) {
+                    int epicId = jsonObject.get("epicTaskId").getAsInt();
+                    return new SubTask(index, epicId, title, description, getStatus(status), getType(type),
+                            getLocalDateTimeFromString(startTime), duration);
+                }
+
             default:
                 return null;
         }
