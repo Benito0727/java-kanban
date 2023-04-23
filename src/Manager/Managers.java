@@ -1,6 +1,5 @@
 package Manager;
 
-import java.io.IOException;
 
 public class Managers {
 
@@ -17,7 +16,7 @@ public class Managers {
         return new FileBackedTasksManager();
     }
 
-    public static HttpTaskManager getHttpManager(String uri) throws IOException {
+    public static HttpTaskManager getHttpManager(String uri){
         return new HttpTaskManager(uri);
     }
 

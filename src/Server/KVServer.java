@@ -28,7 +28,7 @@ public class KVServer {
 	}
 
 	private void load(HttpExchange h) {
-		// TODO Добавьте получение значения по ключу
+
 		try {
 			if (!hasAuth(h)) {
 				System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
@@ -45,7 +45,7 @@ public class KVServer {
 				if (data.get(key) != null) {
 					sendText(h, data.get(key));
 				} else {
-					System.out.println("В памяти нет записей по ключу");
+					System.out.println("В памяти нет записей по ключу:" + key);
 					h.sendResponseHeaders(400, 0);
 				}
 			} else {

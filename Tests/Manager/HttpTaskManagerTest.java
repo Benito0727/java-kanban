@@ -1,14 +1,11 @@
 package Manager;
 
-import Client.KVTaskClient;
 import Converter.LocalDateTimeJsonConverter;
 import Server.HttpTaskServer;
 import Server.KVServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +15,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.channels.CancelledKeyException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -31,7 +27,6 @@ class HttpTaskManagerTest {
     KVServer kvServer = new KVServer();
     HttpTaskManager manager;
 
-    Gson gson = getGson();
 
     HttpClient client;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
@@ -47,7 +42,7 @@ class HttpTaskManagerTest {
 
 
     @BeforeEach
-    public void startServer() throws IOException {
+    public void startServer(){
         taskServer.start();
     }
 
@@ -129,10 +124,30 @@ class HttpTaskManagerTest {
                 header("Content-Type", "application/json").
                 build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpRequest request1 = HttpRequest.newBuilder().
+                GET().
+                uri(URI.create(uriString + "task/?id=1")).
+                version(Version.HTTP_1_1).
+                header("Content-Type", "application/json").
+                build();
+        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
+        HttpRequest request2 = HttpRequest.newBuilder().
+                GET().
+                uri(URI.create(uriString + "history/")).
+                version(Version.HTTP_1_1).
+                header("Content-Type", "application/json").
+                build();
+        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response2.statusCode());
         assertEquals(200, response.statusCode());
-        HttpTaskManager newManager = KVTaskClient.load();
+        assertEquals(200, response1.statusCode());
+
+        HttpTaskManager newManager = HttpTaskManager.loadManagerFromServer();
 
         assertNotNull(newManager);
         assertNotNull(newManager.getSimpleTaskById(1));
+        assertNotNull(newManager.getHistory());
+        assertEquals(1, newManager.getHistory().size());
     }
 }
